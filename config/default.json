@@ -1,0 +1,4 @@
+{
+	"mongoURI": "mongodb+srv://Jellycat123:smart123@robintestcluster-4frel.mongodb.net/test?retryWrites=true&w=majority",
+	"jwtSecret": "secret"
+}
