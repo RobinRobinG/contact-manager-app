@@ -3,13 +3,14 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
 
 // @route   POST  api/users
 // @desc    Register a user
 // @access  Pubilc
+
 router.post(
 	'/',
 	[
@@ -24,6 +25,7 @@ router.post(
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
+
 		const { name, email, password } = req.body;
 		try {
 			let user = await User.findOne({ email: email });
@@ -44,12 +46,17 @@ router.post(
 					id: user.id,
 				},
 			};
-			jwt.sign(payload, config.get('jwtSecret'), {
-                expiresIn: 360000
-            }, (err, token) => {
-                if(err) throw err;
-                res.json({token});
-            });
+			jwt.sign(
+				payload,
+				config.get('jwtSecret'),
+				{
+					expiresIn: 360000,
+				},
+				(error, token) => {
+					if (error) throw error;
+					res.json({ token });
+				}
+			);
 		} catch (error) {
 			console.error(error.message);
 			res.status(500).send('Server Error');

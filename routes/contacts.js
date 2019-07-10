@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator/check');
 
 const User = require('../models/User');
 const Contact = require('../models/Contact');
@@ -11,7 +11,7 @@ const Contact = require('../models/Contact');
 // @access  Private
 router.get('/', auth, async (req, res) => {
 	try {
-		const contacts = await Contact.find({ user: req.user.id }).sort({ date: -1 });
+		const contacts = await Contact.find({ user: req.user._id }).sort({ date: -1 });
 		res.json(contacts);
 	} catch (error) {
 		console.error(error.message);
@@ -96,7 +96,7 @@ router.delete('/:id', auth, async (req, res) => {
 			return res.status(401).json({ msg: 'Not authorized' });
 		}
 		// if all passed, delete contact
-		await Contact.findByIdAndDelete(req.params.id);
+		await Contact.findByIdAndRemove(req.params.id);
 		res.json({ msg: 'contact removed!' });
 	} catch (error) {
 		console.error(error.message);

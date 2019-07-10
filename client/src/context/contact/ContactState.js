@@ -3,16 +3,16 @@ import axios from 'axios';
 import ContactContext from './contactContext';
 import contactReducer from './contactReducer';
 import {
-	GET_CONTACT,
+	GET_CONTACTS,
 	ADD_CONTACT,
 	DELETE_CONTACT,
-	CONTACT_ERROR,
-	CLEAR_CONTACT,
 	SET_CURRENT,
 	CLEAR_CURRENT,
 	UPDATE_CONTACT,
 	FILTER_CONTACTS,
+	CLEAR_CONTACTS,
 	CLEAR_FILTER,
+	CONTACT_ERROR,
 } from '../types';
 
 const ContactState = props => {
@@ -29,7 +29,7 @@ const ContactState = props => {
 	const getContacts = async () => {
 		try {
 			const res = await axios.get('./api/contacts');
-			dispatch({ type: GET_CONTACT, payload: res.data });
+			dispatch({ type: GET_CONTACTS, payload: res.data });
 		} catch (error) {
 			dispatch({ type: CONTACT_ERROR, payload: error.response.msg });
 		}
@@ -60,14 +60,37 @@ const ContactState = props => {
 		} catch (error) {
 			dispatch({
 				type: CONTACT_ERROR,
-				payload: id,
+				payload: error.response.msg,
+			});
+		}
+	};
+
+	// Update Contact
+	const updateContact = async contact => {
+		const config = {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+
+		try {
+			const res = await axios.put(`/api/contacts/${contact._id}`, contact, config);
+
+			dispatch({
+				type: UPDATE_CONTACT,
+				payload: res.data,
+			});
+		} catch (err) {
+			dispatch({
+				type: CONTACT_ERROR,
+				payload: err.response.msg,
 			});
 		}
 	};
 
 	// Clear Contacts
 	const clearContacts = () => {
-		dispatch({ type: CLEAR_CONTACT });
+		dispatch({ type: CLEAR_CONTACTS });
 	};
 
 	// Set Current Contact
@@ -78,10 +101,7 @@ const ContactState = props => {
 	const clearCurrent = () => {
 		dispatch({ type: CLEAR_CURRENT });
 	};
-	// Update Contact
-	const updateContact = contact => {
-		dispatch({ type: UPDATE_CONTACT, payload: contact });
-	};
+
 	// Filter Contacts
 	const filterContacts = text => {
 		dispatch({ type: FILTER_CONTACTS, payload: text });
@@ -98,14 +118,14 @@ const ContactState = props => {
 				current: state.current,
 				filtered: state.filtered,
 				error: state.error,
-				getContacts,
 				addContact,
 				deleteContact,
-				updateContact,
 				setCurrent,
 				clearCurrent,
+				updateContact,
 				filterContacts,
 				clearFilter,
+				getContacts,
 				clearContacts,
 			}}
 		>

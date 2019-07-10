@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
-import AlertContext from '../../context/alert/alertContext';
 import AuthContext from '../../context/auth/authContext';
+import AlertContext from '../../context/alert/alertContext';
 
 const Login = props => {
 	const alertContext = useContext(AlertContext);
@@ -14,7 +14,7 @@ const Login = props => {
 			props.history.push('/');
 		}
 
-		if (error === 'Invalid Credential') {
+		if (error === 'Invalid Credentials') {
 			setAlert(error, 'danger');
 			clearErrors();
 		}
@@ -29,6 +29,7 @@ const Login = props => {
 	const { email, password } = user;
 
 	const onChange = e => setUser({ ...user, [e.target.name]: e.target.value });
+
 	const onSubmit = e => {
 		e.preventDefault();
 		if (email === '' || password === '') {
@@ -47,11 +48,11 @@ const Login = props => {
 				Account <span className="text-primary">Login</span>
 			</h1>
 			<form onSubmit={onSubmit}>
-				<div className="from-group">
+				<div className="form-group">
 					<label htmlFor="email">Email Address</label>
 					<input type="email" name="email" value={email} onChange={onChange} required />
 				</div>
-				<div className="from-group">
+				<div className="form-group">
 					<label htmlFor="password">Password</label>
 					<input type="password" name="password" value={password} onChange={onChange} required />
 				</div>
